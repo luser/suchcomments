@@ -36,7 +36,8 @@ $(function () {
         success: function (data) {
             var comments = [];
             for (var i = data.hits.length - 1; i >= 0; i--) {
-                comments.push(data.hits[i].user_comments);
+                comments.push({comment: data.hits[i].user_comments,
+                              locale: data.hits[i].useragent_locale});
             };
 
             // much loaded
@@ -58,10 +59,12 @@ $(function () {
 
     function doTheMagic(comments) {
         function updateComments() {
-            var comment = r(comments);
+            var one = r(comments);
+            var comment = one.comment;
+            var locale = one.locale && (one.locale.indexOf('chrome://') == -1) ? one.locale : 'en-US';
             var u = new fallbackSpeechSynthesisUtterance(comment);
             //TODO: do language detection here
-            u.lang = 'en-US';
+            u.lang = locale;
             u.volume = 1.0;
             u.rate = 1.0;
             fallbackSpeechSynthesis.speak(u);

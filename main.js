@@ -26,7 +26,7 @@ $(function () {
         "#D1D1E0", "#FF5050", "#FFFFF0", "#CC99FF", "#66E0C2", "#FF4DFF", "#00CCFF",
     ];
 
-    var fallbackSpeechSynthesis = (window.speechSynthesis && window.speechSynthesisUtterance) ? window.speechSynthesis : window.speechSynthesisPolyfill;
+    var fallbackSpeechSynthesis = (window.speechSynthesis && window.SpeechSynthesisUtterance) ? window.speechSynthesis : window.speechSynthesisPolyfill;
     var fallbackSpeechSynthesisUtterance = window.SpeechSynthesisUtterance || window.SpeechSynthesisUtterancePolyfill;
 
     // Such comments!
@@ -68,6 +68,7 @@ $(function () {
         function updateComments() {
             var one = r(comments);
             var comment = one.comment;
+            console.log('comment: %s', comment);
             var locale = one.locale && (one.locale.indexOf('chrome://') == -1) ? one.locale : 'en-US';
             var u = new fallbackSpeechSynthesisUtterance(comment);
             //TODO: do language detection here

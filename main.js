@@ -26,7 +26,8 @@ $(function () {
         "#D1D1E0", "#FF5050", "#FFFFF0", "#CC99FF", "#66E0C2", "#FF4DFF", "#00CCFF",
     ];
 
-    var fallbackSpeechSynthesis = (window.speechSynthesis && window.speechSynthesisUtterance) ? window.speechSynthesis : window.speechSynthesisPolyfill;
+
+    var fallbackSpeechSynthesis = (window.speechSynthesis && window.SpeechSynthesisUtterance) ? window.speechSynthesis : window.speechSynthesisPolyfill;
     var fallbackSpeechSynthesisUtterance = window.SpeechSynthesisUtterance || window.SpeechSynthesisUtterancePolyfill;
 
     // Such comments!
@@ -43,6 +44,9 @@ $(function () {
                     comments.push({comment: data.hits[i].user_comments,
                                    locale: data.hits[i].useragent_locale});
                 }
+
+                comments.push({comment: data.hits[i].user_comments,
+                              locale: data.hits[i].useragent_locale});
             };
 
             // much loaded
@@ -66,6 +70,7 @@ $(function () {
         function updateComments() {
             var one = r(comments);
             var comment = one.comment;
+
             var locale = one.locale && (one.locale.indexOf('chrome://') == -1) ? one.locale : 'en-US';
             var u = new fallbackSpeechSynthesisUtterance(comment);
             //TODO: do language detection here

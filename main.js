@@ -26,6 +26,9 @@ $(function () {
         "#D1D1E0", "#FF5050", "#FFFFF0", "#CC99FF", "#66E0C2", "#FF4DFF", "#00CCFF",
     ];
 
+    var fallbackSpeechSynthesis = (window.speechSynthesis && window.speechSynthesisUtterance) ? window.speechSynthesis : window.speechSynthesisPolyfill;
+    var fallbackSpeechSynthesisUtterance = window.SpeechSynthesisUtterance || window.SpeechSynthesisUtterancePolyfill;
+
     // Such comments!
     $.ajax({
         dataType: "json",
@@ -37,7 +40,8 @@ $(function () {
 
                 // Remove comments too small to mean anything.
                 if (comment.length > 2) {
-                    comments.push(data.hits[i].user_comments);
+                    comments.push({comment: data.hits[i].user_comments,
+                                   locale: data.hits[i].useragent_locale});
                 }
             };
 
@@ -60,8 +64,17 @@ $(function () {
 
     function doTheMagic(comments) {
         function updateComments() {
+            var one = r(comments);
+            var comment = one.comment;
+            var locale = one.locale && (one.locale.indexOf('chrome://') == -1) ? one.locale : 'en-US';
+            var u = new fallbackSpeechSynthesisUtterance(comment);
+            //TODO: do language detection here
+            u.lang = locale;
+            u.volume = 1.0;
+            u.rate = 1.0;
+            fallbackSpeechSynthesis.speak(u);
             $('<span>', {
-                'text': r(comments)
+                'text': comment
             }).css({
                 'position': 'absolute',
                 'color': r(suchcolors),
